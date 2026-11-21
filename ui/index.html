@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PostForge</title>
+<style>
+:root{--bg:#0b0b12;--panel:#14141f;--panel2:#1b1b29;--line:#2a2a3d;--ink:#f3f3fa;--mute:#9a9ab3;--ac:#ff5a36;--ok:#34d399;--bad:#f87171}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--ac);display:grid;place-items:center;font-weight:900;color:#fff;font-size:22px}
+h1{font-size:20px;margin:0}header p{margin:0;color:var(--mute);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
+.form{display:grid;gap:12px;grid-template-columns:repeat(6,1fr)}
+.f{display:flex;flex-direction:column;gap:6px;grid-column:span 6}
+@media(min-width:760px){.f.w2{grid-column:span 2}.f.w3{grid-column:span 3}.f.w4{grid-column:span 4}}
+label{font-size:12px;color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+input,select,textarea{background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:12px;font:inherit;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ac);border-color:transparent}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 18px;font-weight:700;background:var(--ac);color:#fff}
+button.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.chip.on{border-color:var(--ac);color:var(--ac)}
+#profile{margin-top:14px;display:none}#profile .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.sw{width:34px;height:34px;border-radius:10px;border:1px solid var(--line)}
+.kv{font-size:13px;color:var(--mute)}.kv b{color:var(--ink);font-weight:600}
+.grid{display:grid;gap:14px;margin-top:16px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.post{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}
+.post img{width:100%;display:block;background:#000}
+.post .m{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.tag{display:inline-flex;gap:6px;align-items:center;font-size:12px;border-radius:999px;padding:3px 10px;background:var(--panel2);border:1px solid var(--line);width:fit-content}
+.pass{color:var(--ok)}.fail{color:var(--bad)}.warn{color:#fbbf24}
+.why{font-size:12.5px;color:var(--mute)}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;z-index:10}
+#sheet .in{position:absolute;inset:0;background:var(--bg);overflow:auto;padding:14px 14px 60px;display:grid;gap:16px;align-content:start}
+@media(min-width:900px){#sheet .in{inset:3vh 4vw;border-radius:20px;border:1px solid var(--line);grid-template-columns:minmax(280px,420px) 1fr}}
+.pv img{width:100%;border-radius:14px;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{padding:8px 14px;background:var(--panel2);color:var(--mute);border:1px solid var(--line)}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;background:#0f0f19;border:1px solid var(--line);border-radius:14px;padding:14px;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:62vh;overflow:auto}
+textarea.code{font:12.5px/1.5 ui-monospace,Menlo,monospace;min-height:260px;background:#0f0f19}
+.note{font-size:12.5px;color:var(--mute);margin:0 0 10px}
+.chk{display:grid;gap:8px}.chk div{display:flex;gap:10px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sp{display:inline-block;width:14px;height:14px;border:2px solid #fff4;border-top-color:#fff;border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{color:var(--bad);margin-top:10px}
+</style></head>
+<body><div class="wrap">
+<header><div class="logo">P</div><div><h1>PostForge</h1><p>AI writes only the body. Engine owns fonts, brand, spacing and fit. Rendered by Takumi, no browser.</p></div></header>
+
+<div class="card"><div class="form">
+  <div class="f w4"><label>Website</label><input id="url" placeholder="yoursite.com  (or try a demo below)" autocapitalize="off" autocorrect="off"></div>
+  <div class="f w2"><label>Format</label><select id="format"></select></div>
+  <div class="f w3"><label>Topic (optional)</label><input id="topic" placeholder="e.g. website speed, weekend offer"></div>
+  <div class="f w2"><label>Visual type</label><select id="type"></select></div>
+  <div class="f w3"><label>Mood / style</label><select id="style"></select></div>
+  <div class="f w3"><label>Your photos (optional, up to 4)</label><input id="photos" type="file" accept="image/*" multiple></div>
+  <div class="f w2"><label>Posts</label><select id="count"><option>3</option><option>4</option><option selected>6</option><option>8</option><option>12</option></select></div>
+  <div class="f"><label>Demo sites</label><div class="chips" id="demos"></div></div>
+  <div class="f"><button id="go">Analyze site and generate posts</button><div id="err" class="err"></div></div>
+</div></div>
+
+<div id="profile" class="card"></div>
+<div id="grid" class="grid"></div>
+</div>
+
+<div id="sheet"><div class="in" id="sheetIn"></div></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const el = (t, p = {}, ...k) => { const e = Object.assign(document.createElement(t), p); k.flat().forEach((c) => e.append(c)); return e; };
+let state = { posts: [], sid: null, format: "portrait" };
+// downscale uploads in the browser so requests stay small
+const readPhoto = (file) => new Promise((ok) => { const fr = new FileReader(); fr.onload = () => { const im = new Image(); im.onload = () => { const k = Math.min(1, 1400 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL("image/jpeg", 0.86)); }; im.onerror = () => ok(null); im.src = fr.result; }; fr.onerror = () => ok(null); fr.readAsDataURL(file); });
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : {});
+  const j = await r.json(); if (!r.ok) throw new Error(j.error || "failed"); return j;
+}
+(async () => {
+  const m = await api("/api/meta");
+  Object.entries(m.formats).forEach(([k, v]) => $("#format").append(new Option(v, k)));
+  $("#type").append(new Option("Auto (AI picks the visual)", ""));
+  Object.entries(m.types).forEach(([k, v]) => $("#type").append(new Option(v, k)));
+  $("#style").append(new Option("Auto (matches the business)", "auto"), new Option("Mix (a different mood per post)", "mix"));
+  Object.entries(m.styles).forEach(([k, v]) => $("#style").append(new Option(v, k)));
+  m.demos.forEach((d) => $("#demos").append(el("span", { className: "chip", textContent: d, onclick: () => { $("#url").value = d; } })));
+})();
+
+$("#go").onclick = async () => {
+  const btn = $("#go"); $("#err").textContent = "";
+  const url = $("#url").value.trim(); if (!url) { $("#err").textContent = "Enter a website first."; return; }
+  btn.disabled = true; btn.replaceChildren(el("span", { className: "sp" }), "Reading site and rendering...");
+  try {
+    const format = $("#format").value;
+    const photos = (await Promise.all([...$("#photos").files].slice(0, 4).map(readPhoto))).filter(Boolean);
+    const res = await api("/api/generate", { url, topic: $("#topic").value, count: +$("#count").value, format, type: $("#type").value, style: $("#style").value, photos });
+    state = { posts: res.posts, sid: res.sid, format };
+    showProfile(res.profile); showGrid();
+  } catch (e) { $("#err").textContent = e.message; }
+  btn.disabled = false; btn.textContent = "Analyze site and generate posts";
+};
+
+function showProfile(p) {
+  const box = $("#profile"); box.style.display = "block"; box.replaceChildren(
+    el("div", { className: "row" }, el("div", { className: "sw", style: `background:${p.accent}` }),
+      el("div", {}, el("div", {}, el("b", { textContent: p.name }), ` · ${p.niche}`), el("div", { className: "kv", textContent: p.tagline })),
+      el("div", { className: "kv" }, el("b", { textContent: "Audience: " }), p.audience, " · ", el("b", { textContent: "Tone: " }), p.tone, " · ", el("b", { textContent: "Source: " }), p.source, " · ", el("b", { textContent: "Photos: " }), String(p.photoCount || 0) + " real (rest are generated art plates)")));
+}
+
+function showGrid() {
+  const g = $("#grid"); g.replaceChildren();
+  state.posts.forEach((p, i) => {
+    const r = p.report, okc = r.passed ? "pass" : "fail";
+    g.append(el("div", { className: "post", onclick: () => openSheet(i) },
+      el("img", { src: p.png, alt: p.visualLabel }),
+      el("div", { className: "m" },
+        el("div", { style: "display:flex;gap:6px;flex-wrap:wrap" },
+          el("span", { className: "tag", textContent: p.visualLabel }),
+          el("span", { className: "tag", textContent: p.style }),
+          el("span", { className: `tag ${okc}`, textContent: r.passed ? "No overflow / overlap" : "Needs review" }),
+          p.needsVerification ? el("span", { className: "tag warn", textContent: "Verify stat" }) : ""),
+        el("div", { className: "why", textContent: p.why }))));
+  });
+}
+
+function openSheet(i, tab = "prompt") {
+  const p = state.posts[i], sh = $("#sheet"), inn = $("#sheetIn");
+  sh.style.display = "block"; document.body.style.overflow = "hidden";
+  const pv = el("div", { className: "pv" }, el("img", { id: "pvimg", src: p.png }),
+    el("div", { style: "display:flex;gap:8px;margin-top:10px" },
+      el("button", { textContent: "Download PNG", onclick: () => { const a = el("a", { href: $("#pvimg").src, download: `${p.brand.name}-${p.id}.png` }); a.click(); } }),
+      el("button", { className: "ghost", textContent: "Close", onclick: closeSheet })));
+  const names = [["prompt", "AI input prompt"], ["body", "AI output (body only)"], ["report", "Engine report"]];
+  const tabs = el("div", { className: "tabs" }, names.map(([k, n]) => el("button", { className: k === tab ? "on" : "", textContent: n, onclick: () => openSheet(i, k) })));
+  const pane = el("div", {});
+  if (tab === "prompt") {
+    pane.append(el("p", { className: "note", textContent: "This is exactly what a real visual-writer LLM would receive. The mock AI here uses the same brief but no model call. Swap src/brain/mockLLM.js with an API call to go live." }),
+      el("pre", { textContent: "### SYSTEM\n" + p.prompt.system + "\n\n### USER\n" + p.prompt.user }));
+  } else if (tab === "body") {
+    const ta = el("textarea", { className: "code", value: p.aiBody, spellcheck: false });
+    pane.append(el("p", { className: "note", textContent: "Only this part comes from the AI. Edit it and re-render: unknown tags, classes, styles and overflow are handled by the engine." }), ta,
+      el("div", { style: "margin-top:10px;display:flex;gap:8px" }, el("button", { textContent: "Re-render", onclick: async (e) => {
+        e.target.disabled = true;
+        try { const r = await api("/api/rerender", { body: ta.value, brand: p.brand, format: state.format, tag: p.tag, seed: p.seed, sid: state.sid, photoBg: p.photoBg }); p.png = r.png; p.report = r.report; p.aiBody = ta.value; $("#pvimg").src = r.png; showGrid(); openSheet(i, "report"); }
+        catch (er) { alert(er.message); } e.target.disabled = false; } })));
+  } else {
+    const r = p.report;
+    pane.append(el("div", { className: "chk" },
+      ...r.checks.map((c) => el("div", {}, el("b", { className: c.pass ? "pass" : "fail", textContent: c.pass ? "PASS" : "FAIL" }), c.name)),
+      el("div", {}, el("b", { textContent: "Mood" }), `${r.styleLabel}${r.photoBackground ? " · full-bleed photo background" : ""}`),
+      el("div", {}, el("b", { textContent: "Images" }), Object.keys(r.images).length ? Object.entries(r.images).map(([k, v]) => `${k}: ${v === "photo" ? "real photo" : "generated art"}`).join(", ") : "none used"),
+      el("div", {}, el("b", { textContent: "Type scale" }), `${r.scale}x  (engine picked the largest that fits)`),
+      el("div", {}, el("b", { textContent: "Spacing density" }), String(r.density)),
+      el("div", {}, el("b", { textContent: "Canvas" }), r.format + `  · rendered in ${r.ms} ms by Takumi`),
+      el("div", {}, el("b", { textContent: "Dropped optional blocks" }), r.droppedOptional.length ? r.droppedOptional.join(" | ") : "none"),
+      el("div", {}, el("b", { textContent: "Sanitizer" }), r.sanitizerWarnings.length ? r.sanitizerWarnings.join("; ") : "clean"),
+      r.issues.length ? el("pre", { textContent: JSON.stringify(r.issues, null, 1) }) : ""));
+  }
+  inn.replaceChildren(pv, el("div", {}, tabs, pane));
+}
+function closeSheet() { $("#sheet").style.display = "none"; document.body.style.overflow = ""; }
+document.addEventListener("keydown", (e) => e.key === "Escape" && closeSheet());
+</script></body></html>

@@ -1,0 +1,16 @@
+{
+  "name": "postforge",
+  "version": "1.0.0",
+  "description": "Social post visual engine: AI writes only the body, engine owns fonts/tokens/chrome/fit. Rendered with Takumi (no headless browser).",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "demo": "node cli.js --demo",
+    "gen": "node cli.js"
+  },
+  "dependencies": {
+    "@takumi-rs/core": "^2.22.0",
+    "@takumi-rs/wasm": "^2.22.0",
+    "node-html-parser": "^7.0.0"
+  }
+}
